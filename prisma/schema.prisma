@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// datasource db {
+//   provider = "sqlite"
+//   url      = env("DATABASE_URL")
+// }
+
+enum OrderStatus {
+  PENDING
+  TRANSPORTING
+  DELIVERING
+  CANCELED
+}
+
+enum Roles {
+  ADMIN
+  USER
+  SELLER
+  BUYER
+}
+
+model Client {
+  id    String @id @default(uuid())
+  name  String
+  email String @unique
+  age   Int
+  phone String
+
+  available Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  restaurant   Restaurant? @relation(fields: [restaurantId], references: [id])
+  restaurantId String?
+  order        Order[]
+
+  @@index([available])
+}
+
+model Restaurant {
+  id        String  @id @default(uuid())
+  name      String
+  address   String
+  capacity  Int
+  available Boolean @default(true)
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+  clients   Client[]
+  order     Order[]
+}
+
+model Order {
+  id          String      @id @default(uuid())
+  description String
+  ordeStatus  OrderStatus
+
+  restaurantId String?
+  clientId     String?
+
+  available Boolean @default(true)
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+
+  client     Client[]
+  restaurant Restaurant[]
+}
+
+model User {
+  id        String  @id @default(uuid())
+  name      String
+  email     String  @unique
+  password  String
+  role      Roles[]  @default([USER])
+  
+  available Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

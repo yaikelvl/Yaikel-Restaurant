@@ -1,0 +1,16 @@
+version: '3'
+
+
+services:
+  restaurant-db:
+    container_name: restaurant_database
+    image: postgres:16.2
+    restart: always
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=12345678
+      - POSTGRES_DB=restaurantdb
