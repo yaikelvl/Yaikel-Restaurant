@@ -1,10 +1,8 @@
-version: '3'
-
 
 services:
   restaurant-db:
     container_name: restaurant_database
-    image: postgres:16.2
+    image: postgres:17
     restart: always
     volumes:
       - ./postgres:/var/lib/postgresql/data
